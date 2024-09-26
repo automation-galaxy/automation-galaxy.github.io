@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aria Automation Onboarding Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #282c34;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+        }
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 0;
+            text-align: center;
+        }
+        header p {
+            font-size: 1.2em;
+            margin-top: 5px;
+            color: #61dafb;
+        }
+        nav {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #333;
+        }
+        nav a {
+            margin: 0 15px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        nav a:hover {
+            color: #61dafb;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .intro {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .intro h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .intro p {
+            font-size: 1.2em;
+            color: #555;
+        }
+        .note {
+            background-color: #f9edbe;
+            border-left: 6px solid #f1c40f;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        footer {
+            background-color: #282c34;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Automation Galaxy</h1>
+        <p>Explore the universe of IT automation, coding, and virtualization</p>
+    </header>
+    
+    <nav>
+        <a href="#">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="#">Resources</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+    </nav>
+
+    <div class="container">
+    
+    <h1>Aria Automation Onboarding Guide</h1>
+
+    <div class="note">
+        <strong>NOTE:</strong> New build available <a href="codeSamples/com.vmware.pve.vra8.bulkonboarding_v41.package">here</a> for Aria Automation 8.14 and above.
+    </div>
+
+    <p>Onboarding is a great way to get already deployed workloads into Aria Automation 8/Cloud for management. In addition to the UI based approach we have created a set of vRO workflows, since onboarding can be very time consuming to configure all that information in an onboarding plan. vRA 7 content in particular can have a large amount of custom properties that are great to import into Aria Automation 8/Cloud where possible. To address the time consuming approach of the UI for onboarding we have developed a set of vRO workflows to help speed up and scale up the process. At a high level the workflows will perform the following process at scale.</p>
+
+    <ol>
+        <li>Capture machine and deployment data from vRA 7 environment</li>
+        <li>Capture machine and deployment data from Aria Automation 8/Cloud environment</li>
+        <li>Capture discovered machines data from Aria Automation 8/Cloud</li>
+        <li>Allow for exported vRA 7/Aria Automation 8/discovered data to be reviewed and updated prior to onboarding</li>
+        <li>Perform full validation of all updates made to the exported data</li>
+        <li>Generate and run onboarding plans</li>
+        <li>Post Onboarding Operations
+            <ul>
+                <li>Assign leases inline with source environment (optional)</li>
+                <li>Add historical requests from 7x source (optional)</li>
+                <li>Add Cloud Template Icon to Deployments (optional)</li>
+                <li>Generate Metadata for future operations (optional)</li>
+            </ul>
+        </li>
+    </ol>
+
+    <p>Fully detailed steps are provided in the README that is included in the vRO package under resources. Make sure to read the README before running the workflows.</p>
+
+    <h2>Capture machine and deployment data from vRA 7 environment</h2>
+    <p>The first workflow we will look at in more detail is designed to export all deployment and machine data from vRA 7. The vRA 7 export is tenant specific so you will need to complete the full export and onboarding process end to end per vRA 7 tenant. The onboarding process is limited to virtual machines and the current version of the workflows are limited to vSphere base virtual machines. Custom resources and other components in the vRA 7 deployment will be ignored and will not be present in Aria Automation 8. Also note there will be no changes made to the VMs or any other resources during the running of the workflows.&nbsp; The workflows need to be run on vRO 8.8 and above.</p>
+
+    <p>In order to run any of the data capture, validation or onboarding workflows we first need to run the configureBulkOnboardingUtility workflow. This workflow will gather all the required inputs for the entire onboarding process.</p>
+
+    <p>Lets walkthrough each tab to better understand the inputs. The first tab in the configureBulkOnboardingUtility&nbsp; workflow is for 7.x data export, the workflows need to connect to both the IAAS component and the vRA 7 appliance ( portal ). The IAAS administrator needs to have access to the IAAS repository and the username should be specified without any domain prefix or suffix. The domain should be specified on the AD Domain line.&nbsp; The vRA 7 Username needs to be a fabric and tenant administrator.</p>
+
+    <p><img width="1161" height="710" src="images/image01.png"></p>
+
+    <p>The next tab relates to the connection details for vRA 8 on-prem or vRA 8 Cloud. If your use case is vRA 8 to vRA Cloud you will need to initially specify the vRA 8 details on this tab for data capture. Once data capture is completed we can run this workflow again to specify the vRA cloud details.</p>
+
+    <p><strong>On-Prem</strong></p>
+    <p><img width="1161" height="629" src="images/image02.png"></p>
+
+    <p>The refresh token should be populated with your refresh token for your vRA Cloud Org. Details on how to generate the token can be found here. <a href="https://docs.vmware.com/en/VMware-Cloud-services/services/Using-VMware-Cloud-Services/GUID-E2A3B1C1-E9AD-4B00-A6B6-88D31FCDDF7C.html">https://docs.vmware.com/en/VMware-Cloud-services/services/Using-VMware-Cloud-Services/GUID-E2A3B1C1-E9AD-4B00-A6B6-88D31FCDDF7C.html</a></p>
+
+    <p><strong>Cloud</strong></p>
+    <p><img width="1021" height="511" src="images/image03.png"></p>
+
+    <p>The vRO 8 connection tab is to provide the connection details for a specific vRO node. The user provided needs to have ssh access to the vRO node and access to the file system. This is required to provide a location to store metadata gathered from the provided source environment. It is recommended to use the root user to avoid any unexpected access issues.&nbsp; If required another user can be used with ssh access via password and file system read and write access. If you specify a user other than root you will also need to specify a folder path on the Other Settings tab that the user has read/write access to.</p>
+    <p><img width="1155" height="565" src="images/image04.png"></p>
+    <p>The onboarding settings tab specified details related to how the onboarding will be processed and what type of metadata is to be included or added during the onboarding process.</p>
+    
+    <p><strong>vRA 8/Cloud Projects</strong></p>
+    
+    <p>Comma separated list of vRA 8 projects to be processed for both validation and onboarding. The value can be set to one or more projects and allows the onboarding process to be completed in batches of one or more vRA 8 projects</p>
+    
+    <p>Allow Org Owners</p>
+    
+    <p>Specifies if Org Owners can be permitted to own deployments and ignore user project configuration</p>
+    
+    <p>Import Custom Properties</p>
+    
+    <p>Specifies if custom properties extracted from the source environment are to be included with the resource/deployment onboarding.</p>
+    
+    <p>Include Project Defined Properties</p>
+    
+    <p>Specifies if custom properties defined on the vRA 8 Project associated with an onboarded deployment should be added to the onboarded resource</p>
+    
+    <p>Assign Cloud Templates to Deployments</p>
+    
+    <p>Specifies if cloud templates should be assigned to the onboarded deployments. Default cloud templates can be specified on this tab and specific cloud templates can be specified during the data review process.</p>
+    
+    <p>Default Component Name</p>
+
+    <p>This is the component name that is associated with the resource definition in the cloud template. The default one will be used in the event that Cloud Templates are not being assigned or we are unable to extract the component name from the cloud template specified for a particular deployment.</p>
+
+    <p><img width="956" height="668" src="images/image05.png"></p>
+
+    <p>Default Cloud Template Name for Linux Based Deployments</p>
+    <p>Default cloud template that will be used for Linux based OS deployments if no specific cloud template is provided during the data review process</p>
+    <p>Default Cloud Template Name For Windows Based Deployments</p>
+    <p>Default cloud template that will be used for Windows based OS deployments if no specific cloud template is provided during the data review process</p>
+    <p><strong>vRO Resource Folder</strong></p>
+    <p>vRO Resource folder to be used for storing extracted data in csv format and log files related to workflow runs.</p>
+    <p><img width="1089" height="752" src="images/image06.png"></p>
+    <p>The other setting tab relates mostly to backend functionality and the settings do not need to be modified unless you are address a specific issue or configuration change.</p>
+    <p><img width="1123" height="612" src="images/image07.png"></p>
+    <p>Once this workflow completes successfully all the supplied inputs will be stored securely in a vRO configuration element to be used by the subsequent onboarding process.</p>
+    <p>The vRA 7x data capture workflow is ‘captureMachineDatavRA7x’, this workflow once run successfully will create a csv based list of all deployments in the vRA 7x environment. A second csv file will be created with a list of custom property names. Both files can be found in the resource elements folder specified in the Onboarding Settings tab of the configureBulkOnboardingUtility workflow.</p>
+    <p>All subsequent runs of the&nbsp; captureMachineDatavRA7x&nbsp;workflow should be run with the Delta Mode check box ticked. In some cases it can take some time to review and populate the csv file so the Delta Mode is to capture any new deployments in vRA 7 as it is still a running production environment.</p>
+    <p>NOTE: IF captureMachineDatavRA7x workflow is RUN WITHOUT CHECKING THE DELTA MODE CHECK BOX THE DATASET WILL BE DELETED AND YOU WILL NEED TO START THE ENTIRE PROCESS AGAIN FROM THE BEGINNING.</p>
+    <h2>Capture machine and deployment data from vRA 8 environment</h2>
+    <p>Similar to the 7x data capture workflow, the captureMachineDatavRA8 workflow is designed to capture all deployment and virtual machine data from vRA 8 instance.&nbsp; The main use case that this addresses is to move content between vRA 8 instances or move from on-prem to vRA Cloud. This workflow also has a dependency on successfully running the configureBulkOnboardingUtility workflow to supplied all required inputs.</p>
+    <p>Once run successfully the workflow will create a csv based list of all deployments in the vRA 8x environment. A second csv file will be created with a list of custom property names. Both files can be found in the resource elements folder specified in the Onboarding Settings tab of the configureBulkOnboardingUtility workflow.&nbsp; If you have multiple tenants in vRA 8 you will need to complete the entire process end to end for each tenant.</p>
+    <p>NOTE: Once data capture is completed for source vRA 8 environment you will need to run the configureBulkOnboardingUtility workflow again to specify the target vRA 8 or Cloud environment details. The target details should be specified on the vRA 8 / Cloud Connection tab.</p>
+
+
+    <h2>Capture discovered machines data from&nbsp; vRA 8/Cloud</h2>
+    <p>The captureDiscoveredMachineDatavRA8 is designed to export all vSphere virtual machines that have been discovered in vRA 8 / Cloud. captureDiscoveredMachineDatavRA8 workflow has the same dependencies as the other workflows discussed where you need to run configureBulkOnboardingUtility workflow to configure all the required input to complete the data capture. Once run successfully the workflow will create a csv based list of all deployments in the vRA 8x environment.</p>
+    <p>NOTE: all of the above data capture workflows along with the validation workflow and onboarding workflow will create a detailed log file corresponding to the name of the workflow that you are running. The log files are located in the resource elements folder specified in the Onboarding Settings tab of the configureBulkOnboardingUtility workflow. Each run of a workflow will overwrite the previous log file for the corresponding workflow.</p>
+
+    <h2>Allow for exported vRA 7/8/discovered data to be reviewed and updated prior to onboarding</h2>
+    <p>There are 2 x CSV files that can be reviewed and updated, machine_data_&lt; DATE TIME STAMP &gt;.csv ( names may differ depending on onboarding.ini settings ) and machine_data_&lt; DATE TIME STAMP &gt;_custom_properties.csv</p>
+    <p>machine_data csv file contains all the data relating to the machines found in vRA 7 and their corresponding deployment information. You can modify a selection of the columns in this file to further customise the configuration of each machine/deployment onboarded into vRA 8 / Cloud. All supported changes to file are optional and are not required to complete the onboarding process.</p>
+    <p>– The import column can be modified to omit a machine from the onboarding process, set the value to no and the machine will be skipped during onboarding.</p>
+    <p>NOTE: If import column is set to NO the machine is completely removed from the onboarding process during the validation run. In order to include any machines marked with NO at a later stage you will need to run a full data collection again. Running the workflow metadataDump will create an updated csv file that reflects what is currently in the backend metadata database.</p>
+    <p>– The newOwner column can be updated with the desired owner of the deployment/machine in vRA 8. This column can be left blank and the existing owner in vRA 7 will be assumed as the owner in vRA 8.</p>
+    <p>– The project column can be updated with the desired target project for the deployment/machine in vRA 8. This column can be left blank and the Business Group name in vRA 7 will be assumed as the project name in vRA 8. You will need to have a corresponding project created in vRA 8. The onboarding workflows do not create/configure any projects in vRA 8.</p>
+    <p>– The endpointFQDN column can be updated with the FQDN that is configured on the corresponding cloud account in vRA 8. This is optional and is only required for a particular set of use cases where the fqdn in 7 does not match the fqdn in vRA 8. If you are specifying a VCF workload domain you need to specify the workload vCenter FQDN in this column.</p>
+    <p>– The cloudTemplateName column can be updated with a specific cloud template to be associated with each deployment. If this column is left blank the defaults specified in the onboarding.ini file will be used. If you do not want to associate cloud templates this can also be specified in the onboarding.ini file If you have multiple resources in your cloud template you can further specify which resource to map the machine to with notation like so myCloudTemplate:0 or myCloudTemplate:1 where 0 would map to the first vSphere machine or cloud machine defined in the cloud template and 1 would map to the second vSphere machine or cloud machine on the specified cloud template.</p>
+    <p>As touched on above the onboarding workflows do not create any of the vRA 8 infrastructure and the process assumes users, projects, cloud accounts and cloud templates are all created and configured in vRA 8 ahead of time. The validation workflow will highlight any missing configuration in vRA that was specified in the updated csv file.</p>
+    <p>machine_data_custom_properties file stores a unique list of all custom properties extracted from vRA 7. Modifying this file will allow you to remove custom properties from the import process or change the property name as it will appear in vRA 8. To remove the custom property from the process you just need to delete the corresponding entry from the file. To have the name changed on import to vRA 8 you can specify the new name in newPropertyName column. Property names cannot have spaces.</p>
+    <p>TIPS &amp; TRICKS:&nbsp; If you want to clean up the exported csv file and remove any machines that you do not want to onboard you can do the following. Mark the import column in the csv file with no for all machine you want omitted from the onboarding process. Run the validateOnboardingCSV workflow with the updated machine_data&nbsp; csv file and once completed, the result of the workflow run can be ignored. Now run the metadataDump workflow in the helper folder. This workflow will create a new csv file called metadata_dump_&lt; DATE TIME STAMP &gt; .csv this file will now only contain machines / deployments that were marked as yes in the import column and this file can now be reviewed and update and used when running future validation.</p>
+    <h2>Perform full validation of all updates made to the exported data</h2>
+    <p>Once the csv files have been modified as required you can supply it as an input for the validateOnboardingCSV workflow. If you have specified to Import Custom Properties on the Onboarding Settings tab in the configureBulkOnboardingUtility workflow you will also need to supply the reviewed/updated machine_data_custom_properties csv file. The validation process will check that all projects exist in vRA 8 as specified in the csv file, all cloud accounts exist in vRA 8, all owners are valid users in vRA 8 and are members or administrators in the specified project along with checking the specified machine is visible in vRA 8 and not already associated with a project. The output in the vro log section is quite verbose for the validation process highlighting any issues, you can also find more details in the log file in the resource elements folder. Once the workflow is finished there is a summary printed at the end to highlight areas that failed validation. Validation can be run as often as required until all validation errors have been addressed.</p>
+    <p>There is a guide included that can provide some troubleshooting tips Troubleshooting_validation_error_for_bulk_onboarding.txt</p>
+    <p>Once your validation summary looks like this you are ready to begin creating onboarding plans.</p>
+    <p>In the case of an active vRA 7 x environment you might want to run the captureMachineDatavRA7x workflow with the Delta Mode check box checked to capture any new 7x deployments and include them in the onboarding process.</p>
+    <p>NOTE: If validation fails due to missing VMs in vCenter you can remove the VMs from the dataset by checking the&nbsp;Delete Delta VM and&nbsp;specifying a comma separated list of VMs to remove from the dataset. In the output of a failed validation you should be able to copy a list of VM names that caused the validation failure in the Unidentified VMs List.&nbsp; See screenshot below.</p>
+    <p><img width="1153" height="102" src="images/image08.png"></p>
+    <p>TIPS &amp; TRICKS:&nbsp; If you are onboarding a very large number of deployments and you want to complete validation and onboarding one or two project at a time you can proceed with onboarding of the desired project/s if you are happy that any validation failures highlighted by the validateOnboardingCSV workflow are not related to the desired project/s</p>
+    <h2>Generate and run onboarding plans</h2>
+    <p>Once validation is completed successfully ( or for your desired project/s ) and you have walked through all the steps with the deltas if required ( either to remove machines from the process or add net new 7.x deployments) we are ready to begin the onboarding. The onboarding workflow groups machines and deployments at the project level. Projects will processed one at a time based on the projects specified in the configureBulkOnboardingUtility workflow or as an input for the onboarding workflow onboardMachines ( can be a list of 1 or more projects ). To allow for both granular control and&nbsp; batch processing you can run the onboardMachines workflow multiple times and only change the projects field in the input to process one or more project/s at a time. Which ever option best fits your use case.</p>
+    <p>To begin the onboarding you need to run the onboardMachines workflow. The onboardMachine workflow can be run in a dry run mode by leaving the Run Onboarding Plans check box unchecked. This basically provides a dry run feature where you can review the generated plans in the UI to ensure they contain all the data you expect to be onboarded. Once you are happy with the generate onboarding plan review you should run the onboardMachines workflow again and this time you should check the Run Onboarding Plans check box. The onboardMachines workflow will run through the validation process again for each group of machines/deployments related to the project currently being processed. Any failures in validation at this point will cause the onboarding of the current project to fail and the workflow will continue onto the next project. Once the script finishes you should see all the onboarded deployments appear in vRA 8. Depending on the scale of the onboarding it may take some time, we generate 1 onboarding plan per project so the following is the expected performance.</p>
+    <ul>
+    <li>You can onboard up to 3,500 unmanaged machines within a single onboarding plan per hour.</li>
+    <li>You can onboard up to 17,000 unmanaged machines concurrently within multiple onboarding plans per hour.</li>
+    </ul>
+    <p>Once the deployments have been onboarded and the owner assignment is correct in vRA 8 for all onboarded deployments you can go ahead and run the post onboarding workflow.</p>
+
+    <h2>Post Onboarding Operations</h2>
+    <p>The post onboarding workflow postOnboardingOperations currently supports the following operations.</p>
+    <ul>
+    <li>Assign leases inline with source environment ( optional )</li>
+    <li>Add historical requests from 7x source ( optional )</li>
+    <li>Add Cloud Template Icon to Deployments ( optional )</li>
+    <li>Generate Metadata for future operations ( optional )</li>
+    </ul>
+
+    <h3>Assign leases inline with source environment ( optional )</h3>
+    <p>If selected this operation will assign any lease data available in the data captured from the source to the newly onboarded deployments at the target.</p>
+    <h3>Add historical requests from 7x source ( optional )</h3>
+    <p>If enabled when running the configuration workflow at the start of the process and again when running the postOnboardingOperations workflow historical requests relating to each deployment will be populated in vRA 8. The requests are limited to the last 50 operation on a deployment. The requests will be displayed in the correct chronological order on the deployment but the timestamp on requests listed on the left of the history screen will be incorrect. The data relating to the request when selected from the request list will be correct and align to the data for the request in vRA 7. Inputs and the results of the operation are also displayed correctly.</p>
+    <h3>Add Cloud Template Icon to Deployments ( optional )</h3>
+    <p>If selected and cloud templates were assigned to the deployments as part of the onboarding the icon configured on the Cloud Template will be configure on all corresponding deployments that were onboarded.</p>
+    <h3>Generate Metadata for future operations ( optional )</h3>
+    <p>If selected a JSON based text file will be created and saved in the resources elements folder in vRO. This file can in turn be read by any custom workflow to identify all deployments and machines that were onboarded during an onboarding run.</p>
+
+    <h2>Workflow Limitations</h2>
+    <ul>
+        <li>Only supports onboarding of vSphere machines</li>
+        <li>Requires vRO 8.14 or above</li>
+    </ul>
+
+    <h2>Release Notes</h2>
+    <a href="codeSamples/ReleaseNotesBulkOnboardingUtility"><h3>Release Notes</h3></a>
+    
+    <h2>vRO Package</h2>
+    <a href="codeSamples/com.vmware.pve.vra8.bulkonboarding_v41.package"><h3>vRA 8 Bulk Onboarding Utility 8.14+</h3></a>
+    
+
+   </div>
+
+</body>
+</html>
