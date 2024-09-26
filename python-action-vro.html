@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build a Python Action for vRO Polyglot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #282c34;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .container h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-left: 4px solid #333;
+            overflow-x: auto;
+        }
+        footer {
+            background-color: #282c34;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+        a {
+            color: #61dafb;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Automation Galaxy Blog</h1>
+    </header>
+
+    <div class="container">
+        <h2>Build a Python Action for vRO Polyglot</h2>
+        <p>If you're working with VMware's vRealize Orchestrator (vRO) and need to integrate Python scripts, you can create Python actions using vRO's polyglot feature. This post walks you through the process of setting up a Python action in vRO on a <strong>Linux system</strong>, preferably <strong>Photon OS</strong>, running <strong>Python 3.7.5</strong>.</p>
+
+        <h3>Step 1: Install Pip 3 on Photon OS</h3>
+        <p>First, you'll need to install <code>pip3</code> on Photon OS to manage Python packages. Run the following command in Photon OS to install Pip 3:</p>
+        <pre><code>tdnf install python3-pip --disablerepo=photon-updates</code></pre>
+
+        <h3>Step 2: Set Up Your Python Environment</h3>
+        <p>In the root directory of your Python application (where your main script resides), you'll need to create a <code>lib</code> directory. This directory will house any necessary Python modules.</p>
+        <p>To set it up, run the following commands:</p>
+        <pre><code>mkdir lib
+pip3 install paramiko --target=/root/vroAction/sshTest/lib</code></pre>
+
+        <h3>Step 3: Create the ZIP File</h3>
+        <p>Once your application is set up and the required modules are installed, you’ll need to create a ZIP file for the vRO action. This ZIP file will exclude any existing <code>.zip</code> files in the directory:</p>
+        <pre><code>zip -r --exclude=*.zip -X sshTest.zip .</code></pre>
+
+        <h3>Step 4: Define the Entry Point Function</h3>
+        <p>Your Python script must include a function that vRO will use as an entry point. The function signature should look like this:</p>
+        <pre><code>def handler(context, inputs):
+    return (anything you see fit)</code></pre>
+
+        <h3>Step 5: Referencing the Handler</h3>
+        <p>When referencing the handler in vRO, use the format <code>MainScriptName.FunctionName</code>. For example, if your main Python script is named <code>sshTest.py</code>, the handler would be referenced in vRO as:</p>
+        <pre><code>sshTest.handler</code></pre>
+
+        <h3>Additional Resources</h3>
+        <ul>
+            <li><a href="https://github.com/tgeorgiev/vro-polyglot-scripts/tree/master/python/aws" target="_blank">vRO Polyglot Python Action Example</a></li>
+            <li><a href="https://vnuggets.com/2020/10/23/vrealize-orchestrator-lets-talk-polyglot/" target="_blank">vRealize Orchestrator Polyglot Overview</a></li>
+        </ul>
+    </div>
+
+    <footer>
+        <p>© 2024 Automation Galaxy. All rights reserved.</p>
+    </footer>
+</body>
+</html>
