@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Galaxy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #282c34;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+        }
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        header p {
+            font-size: 1.2em;
+            margin-top: 5px;
+            color: #61dafb;
+        }
+        nav {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #333;
+        }
+        nav a {
+            margin: 0 15px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        nav a:hover {
+            color: #61dafb;
+        }
+        .container h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .intro {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .intro h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .intro p {
+            font-size: 1.2em;
+            color: #555;
+        }
+        footer {
+            background-color: #282c34;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Automation Galaxy</h1>
+        <p>Explore the universe of IT automation, coding, and virtualization</p>
+    </header>
+    
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="#">Resources</a>
+        <a href="#">About</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+
+    
+    <div class="container">
+        <h2>Customise vRO Environment Add custom .py files</h2>
+        <ol>
+          <li>Create a vRO package (must be vRO 8.8 or above).</li>
+          <li>Add the vRO environment that you want to add custom files to.</li>
+          <li>Save and Export the vRO package.</li>
+          <li>Extract the contents of the package file (used 7-Zip on Windows for testing).</li>
+          <li>Browse the exported folders and find the bundle file in the elements-&gt;UUID-&gt; folder.</li>
+          <li>Extract the bundle file with 7-Zip (most compression utilities will fail to extract due to how the archive was created).</li>
+          <li>Browse the extracted folder to the <code>lib</code> folder, place your custom Python files in here.</li>
+          <li>Create a zip from the <code>environment-bundle</code> folder. The <code>environment-bundle</code> folder should be added to the zip, not just its contents.</li>
+          <li>Rename the created archive to <code>bundle</code> and replace the old bundle file with this newly created file. Make sure to remove any other extracted files from the folder hierarchy.</li>
+          <li>Now, in the root of the extracted package folder (the folder that contains certificates, elements, and signature folders, along with <code>dunes-meta-inf</code>), create a zip file with the 3 folders and the <code>duens-meta</code> file. This folder should be renamed to a <code>.package</code> file and imported back into vRO.</li>
+          <li>The vRO environment should now be updated with the custom files.</li>
+        </ol> 
+
+    </div>
+
+    <footer>
+        <p>© 2024 Automation Galaxy. All rights reserved.</p>
+    </footer>
+</body>
+</html>
