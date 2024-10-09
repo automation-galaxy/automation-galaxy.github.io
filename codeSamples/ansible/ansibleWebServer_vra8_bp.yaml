@@ -1,0 +1,34 @@
+FormatVersion: 1
+inputs: {}
+resources:
+  Cloud_vSphere_Machine_1:
+    type: Cloud.vSphere.Machine
+    properties:
+      imageRef: CentOS7-minimal-PerfLab
+      cpuCount: 1
+      totalMemoryMB: 1024
+      customizationSpec: Debian_SL
+      networks:
+        - network: '${resource.Cloud_vSphere_Network_1.id}'
+          assignment: static
+          assignIPv6Address: false
+  Cloud_Ansible_1:
+    type: Cloud.Ansible
+    properties:
+      host: '${resource.Cloud_vSphere_Machine_1.*}'
+      osType: linux
+      account: Ansible02
+      username: root
+      inventoryFile: /etc/ansible/hosts
+      password: VMware1!
+      playbooks:
+        provision:
+          - /opt/ansible/playbooks/web.yml
+      groups:
+        - web
+  Cloud_vSphere_Network_1:
+    type: Cloud.vSphere.Network
+    properties:
+      networkType: existing
+      constraints:
+        - tag: 'net:10.145.154.0'

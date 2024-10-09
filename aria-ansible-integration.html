@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Galaxy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #282c34;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+        }
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        header p {
+            font-size: 1.2em;
+            margin-top: 5px;
+            color: #61dafb;
+        }
+        nav {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #333;
+        }
+        nav a {
+            margin: 0 15px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        nav a:hover {
+            color: #61dafb;
+        }
+        .container h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .intro {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .intro h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .intro p {
+            font-size: 1.2em;
+            color: #555;
+        }
+        footer {
+            background-color: #282c34;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Automation Galaxy</h1>
+        <p>Explore the universe of IT automation, coding, and virtualization</p>
+    </header>
+    
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="#">Resources</a>
+        <a href="#">About</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+
+    
+    <div class="container">
+
+
+   <h2>Ansible Aria Integration Guide</h2>
+    
+    <h2>Summary</h2>
+    <p>This guide will walk through the setup of Ansible 2.9 and a simple blueprint that will deploy a Linux VM and install and configure Apache web server.</p>
+
+    <h2>Requirements</h2>
+    <p>This sample was tested with Ansible 2.9.5 installed on a Debian 9 (stretch) system integrated with vRA 8.0.1. The blueprint was tested with a CentOS 7 vSphere template.</p>
+    <ul>
+        <li>Ansible host Debian GNU/Linux 9 (stretch) with internet access</li>
+        <li>vRA 8.0.1
+            <ul>
+                <li>Network profile with a configured IP address range (optional, you will need to remove the network components of the blueprint if they are not in place)</li>
+            </ul>
+        </li>
+        <li>vSphere template</li>
+        <li>Linux configuration spec</li>
+    </ul>
+
+    <h2>Install Ansible</h2>
+    <ol>
+        <li>Log into the Ansible host as root or a user with sudo privileges (to simplify the guide I used root).</li>
+        <li>Run the following command on the command line to install required dependencies:
+            <pre><code>apt-get update && apt-get install make git python-setuptools gcc python-dev libffi-dev libssl-dev python-packaging python-pip -y</code></pre>
+        </li>
+        <li>Install the following packages as the latest versions have some compatibility issues with Debian 9:
+            <pre><code>pip install jinja2==2.11.1</code></pre>
+            <pre><code>pip install PyYAML==5.2</code></pre>
+        </li>
+        <li>Clone the Ansible repository:
+            <pre><code>git clone git://github.com/ansible/ansible.git /root/ansible-repo</code></pre>
+        </li>
+        <li>Change to the Ansible folder:
+            <pre><code>cd ansible-repo</code></pre>
+        </li>
+        <li>Checkout and build the latest (at time of writing) release:
+            <pre><code>git checkout stable-2.9 && make</code></pre>
+            <p>Note: You can check for the latest stable release with this command:</p>
+            <pre><code>git branch -a | grep stable</code></pre>
+        </li>
+        <li>Install Ansible with the following command:
+            <pre><code>make install</code></pre>
+        </li>
+        <li>Ansible has a dependency on the package <code>sshpass</code> to connect to remote hosts. Install sshpass with the following command:
+            <pre><code>apt-get install sshpass</code></pre>
+        </li>
+        <li>Ansible should now be installed on the system and you can check the version with the following command:
+            <pre><code>ansible --version</code></pre>
+        </li>
+    </ol>
+
+    <h2>Configure Ansible</h2>
+    <p>In order to integrate Ansible with vRA 8, you will need a few basic configuration files:</p>
+    <ul>
+        <li><a href="codeSamples/ansible/ansible.cfg"><code>ansible.cfg</code></a> file</li>
+        <li><a href="codeSamples/ansible/password_file.txt"><code>password_file.txt</code></a></li>
+        <li><a href="codeSamples/ansible/hosts"><code>hosts</code></a> (only contains a group name at this stage)</li>
+    </ul>
+    <p>The three files mentioned above should be placed in the <code>/etc/ansible</code> folder.</p>
+    <p>This example is not using Ansible Vault, so the contents of <code>password_file.txt</code> can be ignored.</p>
+
+    <h2>Configuring Playbooks</h2>
+    <p>As root, you need to create a folder in the <code>/opt</code> folder called <code>ansible</code> which needs to contain a folder called <code>playbooks</code> and <code>static</code>. The following commands will create the folders:</p>
+    <pre><code>mkdir -p /opt/ansible/playbooks</code></pre>
+    <pre><code>mkdir /opt/ansible/static</code></pre>
+    <p>Place the <a href="codeSamples/ansible/web.yaml"><code>web.yaml</code></a> file into the <code>/opt/ansible/playbooks</code> folder.<br>
+    Place the <a href="codeSamples/ansible/index.html"><code>index.html</code></a> file into the <code>/opt/ansible/static</code> folder.</p>
+
+    <h2>Configure vRA 8 Ansible Integration</h2>
+    <p>Follow the guidance here. All prerequisites should already be in place. Make sure to use the root account.</p>
+
+    <h3>Procedure</h3>
+    <ol>
+        <li>Select <strong>Infrastructure &gt; Connections &gt; Integrations</strong> and click <strong>Add Integration</strong>.</li>
+        <li>Click Ansible.</li>
+        <li>The Ansible configuration page appears.</li>
+        <li>Enter the Hostname, Inventory File Path, and other required information for the Ansible Open Source instance.</li>
+        <li>Click <strong>Validate</strong> to check the integration.</li>
+        <li>Click <strong>Add</strong>.</li>
+    </ol>
+    <p>For more information, visit: <a href="https://docs.vmware.com/en/vRealize-Automation/8.0/Using-and-Managing-Cloud-Assembly/GUID-9244FFDE-2039-48F6-9CB1-93508FCAFA75.html?hWord=N4IghgNiBc4HYGcCWAjCBTEBfIA" target="_blank">VMware vRealize Automation 8.0 Guide</a></p>
+
+    <h2>Create Blueprint in Cloud Assembly</h2>
+    <p>Sample blueprint <a href="codeSamples/ansible/ansibleWebServer_vra8_bp.yaml">here</a>. Modify the blueprint inline with your environment to specify:</p>
+    <ul>
+        <li>imagerf</li>
+        <li>customisationspec</li>
+        <li>ansible account</li>
+        <li>username</li>
+        <li>password</li>
+        <li>constraint tags</li>
+    </ul>
+    <p>You should now be able to deploy an Ansible-managed system from vRA.</p>
+
+    </div>
+
+    <footer>
+        <p>© 2024 Automation Galaxy. All rights reserved.</p>
+    </footer>
+</body>
+</html>
