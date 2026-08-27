@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aria Automation Bulk Onboarding Guide - VCF 9.x Update</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #282c34;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+        }
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 0;
+            text-align: center;
+        }
+        header p {
+            font-size: 1.2em;
+            margin-top: 5px;
+            color: #61dafb;
+        }
+        nav {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #333;
+        }
+        nav a {
+            margin: 0 15px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        nav a:hover {
+            color: #61dafb;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .intro {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .intro h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .intro p {
+            font-size: 1.2em;
+            color: #555;
+        }
+        .note {
+            background-color: #f9edbe;
+            border-left: 6px solid #f1c40f;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        footer {
+            background-color: #282c34;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Automation Galaxy</h1>
+        <p>Explore the universe of IT automation, coding, and virtualization</p>
+    </header>
+    
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="#">Resources</a>
+        <a href="#">About</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="container">
+    
+    <h1>VCF 9 Automation Bulk Onboarding Update</h1>
+
+    <div class="note">
+        <strong>NOTE:</strong> The bulk onboarding solution has been refactored to support <strong>VCF Automation 9.x</strong> and is designed to run from the <strong>Aria Automation Orchestrator (vRO)</strong>.
+    </div>
+
+    <p>I am excited to announce a major refactor to the Bulk Onboarding utility to bring full support for <strong>VCF Automation 9.x</strong> environments. With this latest release, you can seamlessly perform bulk onboarding of legacy Aria Automation deployments directly into the target **VCF Automation VM-Apps** organization.</p>
+
+    <p>While the underlying operational mechanics remain familiar, dedicated workflows labeled with the <code>-vcf9</code> suffix have been introduced to handle modern token-based authentication, target validation, and deployment onboarding for VCF 9 targets.</p>
+
+    <h2>What's New in VCF 9 Automation Onboarding</h2>
+    <ul>
+        <li><strong>VCF 9.x Architecture Support:</strong> Refactored code structure to accommodate VCF Automation 9 endpoints and target structures.</li>
+        <li><strong>VM-Apps Organization Target:</strong> Direct bulk onboarding support into VCF Automation VM-Apps organizations.</li>
+        <li><strong>Dedicated VCF 9 Workflows:</strong> Specialized workflow extensions designed to run seamlessly from Aria Automation Orchestrator.</li>
+    </ul>
+
+    <h2>Workflow Structure Changes</h2>
+    <p>The end-to-end process follows a similar logical path to previous iterations, but requires running the specific <code>-vcf9</code> workflow variations in place of older versions:</p>
+
+    <p><img width="460" height="480" src="images/image_e4c0b7.png" alt="VCF 9 Workflow Structure"></p>
+
+    <ol>
+        <li><strong><code>1. configureBulkOnboardingUtility</code></strong>: Configure your connection settings. A dedicated tab has been added specifically for VCF 9 Automation.
+        <p><img width="980" height="560" src="images/image_e4c0bc.png" alt="VCF 9 Configuration Tab"></p>
+        </li>
+        <li><strong><code>2. captureMachineDatavRA8</code></strong> (or legacy source capture equivalent): Gathers inventory data from the source environment.</li>
+        <li><strong><code>3. validateOnboardingCSV-VCF9</code></strong>: Runs validation checks tailored for VCF 9 target compliance and mapping integrity.</li>
+        <li><strong><code>4. onboardMachines-VCF9</code></strong>: Executes the primary onboarding sequence to register workloads under the VCF Automation 9 environment.</li>
+        <li><strong><code>5. postOnboardingOperations-VCF9</code></strong>: Finalizes post-deployment operational configurations.</li>
+    </ol>
+
+    <h2>Package</h2>
+    <p><a href="codeSamples/automation-galaxy.vcf9-bulk-onboarding.package"><h3>VCF Automation 9 Bulk Onboarding Utility 9+</h3></a></p>
+
+   </div>
+
+   <footer>
+       <p>&copy; 2026 Automation Galaxy. All rights reserved.</p>
+   </footer>
+</body>
+</html>
